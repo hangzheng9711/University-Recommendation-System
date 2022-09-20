@@ -1,0 +1,201 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>高考志愿填报推荐系统-推荐</title>
+<link href="{% static 'css/forms.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor=#87cefa>
+
+<div id='biaoti'>高考志愿填报推荐系统</div>
+<form method='post'>
+{% csrf_token %}
+<div id='line'>
+	<div id='line1'>
+			<div class="biaodan">考生所在地：{{ form.place }}</div>
+			<div class="hint1">※必选<br>※请选择考生所在地</div>
+            <br>
+            ----------------------------------------------------------------------------
+			<div class="biaodan">文理分科：{{ form.subject }}</div>
+			<div class="hint1">※必选<br>※请选择文理科</div>
+            ----------------------------------------------------------------------------
+            <div class="biaodan">分数：{{ form.score }}</div>
+			<div class="hint1">※必填<br>※请填写分数（100～750）</div>
+	</div>
+	<div id='line2'>
+		<div id='lineleft'>
+            <div class="biaodan">理想学校批次：{{ form.line }}</div>
+			<div class="hint2">·选填<br>·默认不限批次</div>
+            <br>
+            ---------------------------------------------------------------------------
+			<div class="biaodan">理想学校省份：{{ form.city }}</div>
+			<div class="hint2">·选填<br>·默认不限省份</div>
+            ---------------------------------------------------------------------------
+             <div class="biaodan">理想专业：{{ form.major }}</div>
+			<div class="hint2">·选填<br>·默认不限专业</div>
+		</div>
+		<div id="lineright">
+            <div class="biaodan">排序设置：{{ form.waypaixu }}</div>
+			<div class="hint2">·选填<br>·选择推荐列表的排序方式<br>·默认根据匹配率排序</div>
+             <br>
+            ---------------------------------------------------------------------------
+            <div class="biaodan"></div>
+			<div class="hint2"><input type="submit" value="提交"></div>
+            ---------------------------------------------------------------------------
+		</div>
+	</div>
+</div>
+</form>
+
+<div class=xiaobiaoti>推荐结果</div>
+{% for i in recDictFinal %}
+<div class=singleTable>
+    	<div class=singleTable1>
+			<table border='1' class=table>
+  			<tbody>
+    		<tr>
+            <th scope="col" width="50px">序号</th>
+      		<th scope="col">学校</th>
+      		<th scope="col" width="100px">录取批次</th>
+      		<th scope="col" width="90px">排名评分</th>
+    		</tr>
+    		<tr>
+      		<td align="center">{{forloop.counter }}</td>
+            <td align="center">{{ i.学校 }}</td>
+      		<td align="center">{{ i.批次 }}</td>
+      		<td align="center">{{ i.排名 }}</td>
+    		</tr>
+  			</tbody>
+			</table>
+		</div>
+		<div>
+			<table border='1' class=table>
+  			<tbody>
+    		<tr>
+      		<th scope="row" width="80px">专业</th>
+                {% for j in i.专业列表 %}
+                    <td align="center">{{ j }}</td>
+                {% endfor %}
+    		</tr>
+    		<tr>
+      		<th scope="row">匹配率</th>
+                {% for j in i.录取概率 %}
+                    <td align="center">{{ j }}</td>
+                {% endfor %}
+    		</tr>
+  			</tbody>
+			</table>
+		</div>
+</div>
+{% endfor %}
+
+<div class=xiaobiaoti>聚类结果</div>
+{% for i in clusterResult %}
+		<div class=singleTable>
+    	<div class=singleTable1>
+			<table border='1' class=table>
+  			<tbody>
+			<tr>
+      		<th scope="row" width="120px">序号</th>
+      		<td align="center">{{forloop.counter }}</td>
+    		</tr>
+    		<tr>
+      		<th scope="row">高校位置评分</th>
+      		<td align="center">{{i.高校位置}}</td>
+    		</tr>
+    		<tr>
+      		<th scope="row" width="120px">高校级别评分</th>
+      		<td align="center">{{i.高校级别}}</td>
+    		</tr>
+			<tr>
+      		<th scope="row">就业评分</th>
+      		<td align="center">{{i.就业}}</td>
+    		</tr>
+			<tr>
+      		<th scope="row">科学研究评分</th>
+      		<td align="center">{{i.科学研究}}</td>
+    		</tr>
+			<tr>
+      		<th scope="row">人才培养评分</th>
+      		<td align="center">{{i.人才培养}}</td>
+    		</tr>
+  			</tbody>
+			</table>
+		</div>
+		<div>
+			<table border="1" class='table'>
+ 		    <tbody>
+    		<tr>
+      		<th scope="row">学校</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.学校 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+      		<th scope="row">省份</th>
+            {% for j in i.大学 %}
+                    <td align="center">{{ j.位置 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+      		<th scope="row">院校举办</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.院校举办 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+      		<th scope="row">院校隶属</th>
+    		{% for j in i.大学 %}
+                    <td align="center">{{ j.院校隶属 }}</td>
+            {% endfor %}
+			</tr>
+			<tr>
+      		<th scope="row">院校类型</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.院校类型 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+			<th scope="row">办学类型</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.办学类型 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+      		<th scope="row">985</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.985 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+      		<th scope="row">211</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.211 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+      		<th scope="row">就业评分</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.就业 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+      		<th scope="row">科学研究评分</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.科学研究 }}</td>
+            {% endfor %}
+    		</tr>
+			<tr>
+      		<th scope="row">人才培养评分</th>
+			{% for j in i.大学 %}
+                    <td align="center">{{ j.人才培养 }}</td>
+            {% endfor %}
+    		</tr>
+  			</tbody>
+			</table>
+		</div>
+	    </div>
+{% endfor %}
+</body>
+</html>
